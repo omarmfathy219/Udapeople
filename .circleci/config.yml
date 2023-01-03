@@ -148,6 +148,8 @@ jobs:
             npm install
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
+            npm update minimist --depth 4
+            npm update loader-utils --depth 2
 
   scan-backend:
     docker:
