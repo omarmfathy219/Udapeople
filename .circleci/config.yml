@@ -45,7 +45,7 @@ commands:
     - slack/notify:
         event: fail
         template: basic_fail_1
-        channel: '#circle-ci'
+        channel: circle-ci
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -432,7 +432,7 @@ jobs:
     steps:
       - slack/notify:
           event: pass
-          channel: '#circle-ci'
+          channel: circle-ci
           template: success_tagged_deployment_1
   
 workflows:
