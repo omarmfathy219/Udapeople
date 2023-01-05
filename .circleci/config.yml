@@ -233,7 +233,7 @@ jobs:
       - install_awscli
       - install_ansible
       - add_ssh_keys:
-          fingerprints: ["d5:a4:0d:bd:36:a7:d2:03:2c:10:93:6a:7c:d1:a7:26"]
+          fingerprints: ["b4:a4:08:1d:f2:7d:c2:31:24:d7:5c:50:90:c5:ec:02"]
       - attach_workspace:
           at: ~/
       - run:
@@ -309,7 +309,7 @@ jobs:
       - install_ansible
       - install_nodejs
       - add_ssh_keys:
-          fingerprints: ["d5:a4:0d:bd:36:a7:d2:03:2c:10:93:6a:7c:d1:a7:26"]
+          fingerprints: ["b4:a4:08:1d:f2:7d:c2:31:24:d7:5c:50:90:c5:ec:02"]
       - attach_workspace:
           at: ~/
       - restore_cache:
