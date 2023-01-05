@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.9.3
+    
 commands:
   install_awscli:
     description: Install AWS CLI v2
@@ -35,6 +38,14 @@ commands:
             # Use n version manager to use Node.js v13.8.0
             sudo npm install --global n
             sudo n 13.8.0
+
+  notifiy_on_fail:
+    description: Notify on fail to Slack
+    steps:
+    - slack/notify:
+        event: fail
+        template: basic_fail_1
+        channel: '#circle-ci'
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -88,6 +99,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-deps
+      -  notifiy_on_fail
 
   build-backend:
     docker:
@@ -105,6 +117,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
+      -  notifiy_on_fail
 
   test-frontend:
     docker:
@@ -119,6 +132,7 @@ jobs:
             cd frontend
             npm install
             npm test
+      -  notifiy_on_fail
 
   test-backend:
     docker:
@@ -133,6 +147,7 @@ jobs:
             cd backend
             npm install
             npm test
+      -  notifiy_on_fail
 
   scan-frontend:
     docker:
@@ -150,6 +165,7 @@ jobs:
             npm update loader-utils --depth 2
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
+      -  notifiy_on_fail
 
   scan-backend:
     docker:
@@ -166,6 +182,7 @@ jobs:
             npm audit fix --force --audit-level=critical
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
+      -  notifiy_on_fail
 
   deploy-infrastructure:
     docker:
@@ -409,7 +426,15 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
-
+  notify_on_success:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - slack/notify:
+          event: pass
+          channel: '#circle-ci'
+          template: success_tagged_deployment_1
+  
 workflows:
   default:
     jobs:
@@ -423,6 +448,8 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+      - notify_on_success:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
