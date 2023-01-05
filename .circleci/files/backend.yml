@@ -44,4 +44,6 @@ Resources:
     Type: AWS::EC2::EIP
     Properties:
       Domain: vpc
-      InstanceId: !Ref EC2Instance
+      InstanceId: !Ref EC2Instance      
+# avg(rate(node_cpu_seconds_total{mode!="idle"}[1m])) by (instance) * 100
+# node_memory_Cached_bytes+node_memory_Buffers_bytes+node_memory_MemFree_bytes
